@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -19,7 +18,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "My API",
         Version = "v1"
@@ -74,7 +73,6 @@ builder.Services.AddAuthentication(x =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
         app.UseDeveloperExceptionPage();
@@ -82,7 +80,7 @@ if (app.Environment.IsDevelopment())
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            c.RoutePrefix = string.Empty; // Set Swagger UI at the app's root
+            // c.RoutePrefix = string.Empty;
         });
 }
 
@@ -93,6 +91,18 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
+
+try
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
+    // await context.Database.EnsureDeletedAsync();
+    await context.Database.MigrateAsync();
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
+}
 
 app.Run();
 
