@@ -32,4 +32,9 @@ public class ProductInfo
     /// Gets or sets the brand associated with this product.
     /// </summary>
     public Brand Brand { get; set; }
+
+    /// <summary>
+    /// Gets or sets the collection of categories.
+    /// </summary>
+    public ICollection<Category> Categories { get; set; }
 }

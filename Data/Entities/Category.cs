@@ -14,7 +14,13 @@ public class Category
     public string Name { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of product categories associated with this category.
+    /// Gets or sets description of the category.
     /// </summary>
-    public ICollection<Product> Products { get; set; }
+    public string Description { get; set; }
+
+
+    /// <summary>
+    /// Gets or sets the collection of product infos associated with this category.
+    /// </summary>
+    public ICollection<ProductInfo> ProductInfos { get; set; }
 }
