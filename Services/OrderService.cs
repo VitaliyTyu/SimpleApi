@@ -48,11 +48,8 @@ public class OrderService : IOrderService
 
     public async Task<bool> DeleteOrderAsync(int id, CancellationToken cancellationToken)
     {
-        var order = await _context.Orders.FindAsync(id);
-        if (order == null) return false;
+        var affectedRows = await _context.Orders.Where(o => o.Id == id).ExecuteDeleteAsync(cancellationToken);
 
-        _context.Orders.Remove(order);
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
+        return affectedRows != 0;
     }
 }

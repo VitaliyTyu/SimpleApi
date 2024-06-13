@@ -48,11 +48,8 @@ public class ProductService : IProductService
 
     public async Task<bool> DeleteProductAsync(int id, CancellationToken cancellationToken)
     {
-        var product = await _context.Products.FindAsync(id);
-        if (product == null) return false;
+        var affectedRows = await _context.Orders.Where(o => o.Id == id).ExecuteDeleteAsync(cancellationToken);
 
-        _context.Products.Remove(product);
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
+        return affectedRows != 0;
     }
 }

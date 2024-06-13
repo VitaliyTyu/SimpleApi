@@ -49,11 +49,8 @@ public class ReviewService : IReviewService
 
     public async Task<bool> DeleteReviewAsync(int id, CancellationToken cancellationToken)
     {
-        var review = await _context.Reviews.FindAsync(id, cancellationToken);
-        if (review == null) return false;
+        var affectedRows = await _context.Orders.Where(o => o.Id == id).ExecuteDeleteAsync(cancellationToken);
 
-        _context.Reviews.Remove(review);
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
+        return affectedRows != 0;
     }
 }
