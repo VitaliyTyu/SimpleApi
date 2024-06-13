@@ -20,9 +20,9 @@ public class ReviewsController : ControllerBase
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<Review>), 200)]
-    public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
+    public async Task<ActionResult<IEnumerable<Review>>> GetReviews(CancellationToken cancellationToken)
     {
-        var reviews = await _reviewService.GetAllReviewsAsync();
+        var reviews = await _reviewService.GetAllReviewsAsync(cancellationToken);
         return Ok(reviews);
     }
 
@@ -33,9 +33,9 @@ public class ReviewsController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(Review), 200)]
     [ProducesResponseType(404)]
-    public async Task<ActionResult<Review>> GetReview(int id)
+    public async Task<ActionResult<Review>> GetReview(int id, CancellationToken cancellationToken)
     {
-        var review = await _reviewService.GetReviewByIdAsync(id);
+        var review = await _reviewService.GetReviewByIdAsync(id, cancellationToken);
         if (review == null)
         {
             return NotFound();
@@ -50,9 +50,9 @@ public class ReviewsController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(Review), 201)]
     [ProducesResponseType(400)]
-    public async Task<ActionResult<Review>> CreateReview(Review review)
+    public async Task<ActionResult<Review>> CreateReview(Review review, CancellationToken cancellationToken)
     {
-        var createdReview = await _reviewService.CreateReviewAsync(review);
+        var createdReview = await _reviewService.CreateReviewAsync(review, cancellationToken);
         return CreatedAtAction(nameof(GetReview), new { id = createdReview.Id }, createdReview);
     }
 
@@ -65,20 +65,20 @@ public class ReviewsController : ControllerBase
     [ProducesResponseType(204)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> UpdateReview(int id, Review review)
+    public async Task<IActionResult> UpdateReview(int id, Review review, CancellationToken cancellationToken)
     {
         if (id != review.Id)
         {
             return BadRequest();
         }
 
-        var existingReview = await _reviewService.GetReviewByIdAsync(id);
+        var existingReview = await _reviewService.GetReviewByIdAsync(id, cancellationToken);
         if (existingReview == null)
         {
             return NotFound();
         }
 
-        await _reviewService.UpdateReviewAsync(review);
+        await _reviewService.UpdateReviewAsync(review, cancellationToken);
         return NoContent();
     }
 
@@ -89,9 +89,9 @@ public class ReviewsController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> DeleteReview(int id)
+    public async Task<IActionResult> DeleteReview(int id, CancellationToken cancellationToken)
     {
-        var result = await _reviewService.DeleteReviewAsync(id);
+        var result = await _reviewService.DeleteReviewAsync(id, cancellationToken);
         if (!result)
         {
             return NotFound();

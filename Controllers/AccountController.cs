@@ -16,14 +16,14 @@ public class AccountController : ControllerBase
     /// Registers a new user.
     /// </summary>
     [HttpPost("register")]
-    public async Task<IActionResult> Register(UserRegistrationDto registrationDto)
+    public async Task<IActionResult> Register(UserRegistrationDto registrationDto, CancellationToken cancellationToken)
     {
         var user = new User
         {
             UserName = registrationDto.UserName,
             // Assign other properties as needed
         };
-        var token = await _userService.RegisterAsync(user, registrationDto.Password);
+        var token = await _userService.RegisterAsync(user, registrationDto.Password, cancellationToken);
         return Ok(token);
     }
 
@@ -31,9 +31,9 @@ public class AccountController : ControllerBase
     /// Authenticates a user and returns a JWT token.
     /// </summary>
     [HttpPost("login")]
-    public async Task<IActionResult> Login(UserLoginDto loginDto)
+    public async Task<IActionResult> Login(UserLoginDto loginDto, CancellationToken cancellationToken)
     {
-        var token = await _userService.AuthenticateAsync(loginDto.UserName, loginDto.Password);
+        var token = await _userService.AuthenticateAsync(loginDto.UserName, loginDto.Password, cancellationToken);
         if (token == null)
         {
             return Unauthorized();

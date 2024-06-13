@@ -11,8 +11,8 @@ using System.Security.Cryptography;
 
 public interface IUserService
 {
-    Task<string> RegisterAsync(User user, string password);
-    Task<string> AuthenticateAsync(string username, string password);
+    Task<string> RegisterAsync(User user, string password, CancellationToken cancellationToken);
+    Task<string> AuthenticateAsync(string username, string password, CancellationToken cancellationToken);
 }
 
 
@@ -28,21 +28,21 @@ public class UserService : IUserService
         _configuration = configuration;
     }
 
-   public async Task<string> RegisterAsync(User user, string password)
+   public async Task<string> RegisterAsync(User user, string password, CancellationToken cancellationToken)
     {
         var hashedPassword  = CalculateMD5Hash(password);
 
         user.Password = hashedPassword;
         _context.Users.Add(user);
-        await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync(cancellationToken);
         return CreateJwtToken(user);
     }
 
-    public async Task<string> AuthenticateAsync(string username, string password)
+    public async Task<string> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
     {
         var hashedPassword  = CalculateMD5Hash(password);
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username && u.Password == hashedPassword);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username && u.Password == hashedPassword, cancellationToken);
         if (user == null) return null;
 
         return CreateJwtToken(user);
