@@ -52,13 +52,17 @@ public class UserService : IUserService
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
+        var claims = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, user.Id.ToString()),
+            });
+        claims.AddClaims(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name.ToString())));
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Name, user.Id.ToString())
-            }),
-            Expires = DateTime.UtcNow.AddDays(7),
+            Subject = claims,
+            Expires = DateTime.UtcNow.AddDays(double.Parse(_configuration["Jwt:Days"])),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
