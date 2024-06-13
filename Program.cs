@@ -98,6 +98,18 @@ try
     var context = scope.ServiceProvider.GetService<ApplicationDbContext>();
     // await context.Database.EnsureDeletedAsync();
     await context.Database.MigrateAsync();
+    if (!context.Roles.Any())
+    {
+        await context.Roles.AddRangeAsync(new List<Role> 
+        {
+            new Role {Name = "Admin"},
+            new Role {Name = "Manager"},
+            new Role {Name = "User"},
+        });
+
+        await context.SaveChangesAsync();
+    }
+
 }
 catch (Exception e)
 {

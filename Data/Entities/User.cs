@@ -46,15 +46,16 @@ public class User
     /// <summary>
     /// Gets or sets the collection of user roles for this user.
     /// </summary>
-    public ICollection<Role> Roles { get; set; }
+    public ICollection<Role> Roles { get; set; } = new List<Role>();
 
     /// <summary>
     /// Gets or sets the collection of orders placed by this user.
     /// </summary>
-    public ICollection<Order> Orders { get; set; }
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
 
     /// <summary>
     /// Gets or sets the collection of reviews made by this user.
     /// </summary>
-    public ICollection<Review> Reviews { get; set; }
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }
+

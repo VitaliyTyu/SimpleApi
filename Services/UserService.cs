@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 public interface IUserService
 {
-    Task<string> RegisterAsync(User user, string password, CancellationToken cancellationToken);
+    Task<string> RegisterAsync(User user, string password, string roleName, CancellationToken cancellationToken);
     Task<string> AuthenticateAsync(string username, string password, CancellationToken cancellationToken);
 }
 
@@ -28,19 +28,26 @@ public class UserService : IUserService
         _configuration = configuration;
     }
 
-   public async Task<string> RegisterAsync(User user, string password, CancellationToken cancellationToken)
+   public async Task<string> RegisterAsync(User user, string password, string roleName,  CancellationToken cancellationToken)
     {
-        var hashedPassword  = CalculateMD5Hash(password);
+        var role = await _context.Roles.FirstOrDefaultAsync(x => x.Name == roleName);
+
+        if (role == null) throw new ArgumentException("Role not found");
+
+        var hashedPassword = CalculateMD5Hash(password);
 
         user.Password = hashedPassword;
+        user.Roles.Add(role); 
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync(cancellationToken);
+
         return CreateJwtToken(user);
     }
 
     public async Task<string> AuthenticateAsync(string username, string password, CancellationToken cancellationToken)
     {
-        var hashedPassword  = CalculateMD5Hash(password);
+        var hashedPassword = CalculateMD5Hash(password);
 
         var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username && u.Password == hashedPassword, cancellationToken);
         if (user == null) return null;
@@ -54,9 +61,10 @@ public class UserService : IUserService
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
 
         var claims = new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.Name, user.Id.ToString()),
-            });
+        {
+            new Claim(ClaimTypes.Name, user.Id.ToString()),
+        });
+
         claims.AddClaims(user.Roles.Select(role => new Claim(ClaimTypes.Role, role.Name.ToString())));
 
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -65,6 +73,7 @@ public class UserService : IUserService
             Expires = DateTime.UtcNow.AddDays(double.Parse(_configuration["Jwt:Days"])),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
+
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }

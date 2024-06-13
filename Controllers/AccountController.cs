@@ -21,9 +21,8 @@ public class AccountController : ControllerBase
         var user = new User
         {
             UserName = registrationDto.UserName,
-            // Assign other properties as needed
         };
-        var token = await _userService.RegisterAsync(user, registrationDto.Password, cancellationToken);
+        var token = await _userService.RegisterAsync(user, registrationDto.Password, registrationDto.Role, cancellationToken);
         return Ok(token);
     }
 
