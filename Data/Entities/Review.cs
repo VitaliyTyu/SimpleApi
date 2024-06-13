@@ -37,4 +37,9 @@ public class Review
     /// Gets or sets the comment given by the user.
     /// </summary>
     public string Comment { get; set; }
+
+    /// <summary>
+    /// Gets or sets review date.
+    /// </summary>
+    public DateTime ReviewDate { get; set; }
 }

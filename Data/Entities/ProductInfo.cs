@@ -14,12 +14,22 @@ public class ProductInfo
     public string Description { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of products associated with this product info.
+    /// Gets or sets the product identifier.
     /// </summary>
-    public ICollection<Product> Products { get; set; }
+    public int ProducId { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of product info categories associated with this product info.
+    /// Gets or sets the product.
     /// </summary>
-    public ICollection<ProductInfo> ProductInfos { get; set; }
+    public Product Product { get; set; }
+
+    /// <summary>
+    /// Gets or sets the brand identifier for the product.
+    /// </summary>
+    public int BrandId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the brand associated with this product.
+    /// </summary>
+    public Brand Brand { get; set; }
 }

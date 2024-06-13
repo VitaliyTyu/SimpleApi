@@ -32,4 +32,19 @@ public class Order
     /// Gets or sets the collection of order items in this order.
     /// </summary>
     public ICollection<OrderItem> OrderItems { get; set; }
+
+    /// <summary>
+    /// Gets or sets the discount identifier.
+    /// </summary>
+    public int DiscountId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the discount.
+    /// </summary>
+    public Discount Discount { get; set; }
+
+    /// <summary>   
+    /// Gets or sets the order date.
+    /// </summary>
+    public DateTime OrderDate { get; set; }
 }

@@ -14,7 +14,17 @@ public class Brand
     public string Name { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of products associated with this brand.
+    /// Gets or sets the name of the description.
     /// </summary>
-    public ICollection<Product> Products { get; set; }
+    public string Description { get; set; }
+
+    /// <summary>
+    /// Gets or sets the name of the country.
+    /// </summary>
+    public string Country  { get; set;  }
+
+    /// <summary>
+    /// Gets or sets the collection of product info categories associated with this product info.
+    /// </summary>
+    public ICollection<ProductInfo> ProductInfos { get; set; }
 }

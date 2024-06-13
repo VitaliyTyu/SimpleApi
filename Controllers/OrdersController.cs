@@ -13,6 +13,9 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
+    /// <summary>
+    /// Gets all orders.
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
     {

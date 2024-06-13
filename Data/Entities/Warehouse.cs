@@ -14,6 +14,11 @@ public class Warehouse
     public string Location { get; set; }
 
     /// <summary>
+    /// Gets or sets capacity.
+    /// </summary>
+    public int Capacity { get; set; }
+
+    /// <summary>
     /// Gets or sets the collection of inventories in this warehouse.
     /// </summary>
     public ICollection<Inventory> Inventories { get; set; }

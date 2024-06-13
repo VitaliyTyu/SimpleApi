@@ -14,16 +14,6 @@ public class Product
     public string Name { get; set; }
 
     /// <summary>
-    /// Gets or sets the brand identifier for the product.
-    /// </summary>
-    public int BrandId { get; set; }
-
-    /// <summary>
-    /// Gets or sets the brand associated with this product.
-    /// </summary>
-    public Brand Brand { get; set; }
-
-    /// <summary>
     /// Gets or sets the product info identifier.
     /// </summary>
     public int ProductInfoId { get; set; }
@@ -34,27 +24,28 @@ public class Product
     public ProductInfo ProductInfo { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of product categories associated with this product.
+    /// Gets or sets the collection of reviews for this product.
     /// </summary>
-    public ICollection<Product> Products { get; set; }
+    public ICollection<Review> Reviews { get; set; }
+
+    /// <summary>   
+    /// Gets or sets the collection of inventories for this product.
+    /// </summary>
+    public ICollection<Inventory> Inventories { get; set; }
             
     /// <summary>
     /// Gets or sets the collection of order items for this product.
     /// </summary>
     public ICollection<OrderItem> OrderItems { get; set; }
 
-    /// <summary>
-    /// Gets or sets the collection of reviews for this product.
-    /// </summary>
-    public ICollection<Review> Reviews { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of discounts for this product.
+    /// Gets or sets the discount identifier.
     /// </summary>
-    public ICollection<Discount> Discounts { get; set; }
+    public int DiscountId { get; set; }
 
     /// <summary>
-    /// Gets or sets the collection of inventories for this product.
+    /// Gets or sets the discount.
     /// </summary>
-    public ICollection<Inventory> Inventories { get; set; }
+    public Discount Discount { get; set; }
 }

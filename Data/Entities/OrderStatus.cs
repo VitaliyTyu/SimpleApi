@@ -9,9 +9,14 @@ public class OrderStatus
     public int Id { get; set; }
 
     /// <summary>
-    /// Gets or sets the status description.
+    /// Gets or sets the name.
     /// </summary>
-    public string Status { get; set; }
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets the description.
+    /// </summary>
+    public string Description { get; set; }
 
     /// <summary>
     /// Gets or sets the collection of orders associated with this status.
