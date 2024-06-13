@@ -6,9 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
+using System.Security.Cryptography;
+
 public interface IUserService
 {
-    Task<User> RegisterAsync(User user, string password);
+    Task<string> RegisterAsync(User user, string password);
     Task<string> AuthenticateAsync(string username, string password);
 }
 
@@ -25,23 +28,28 @@ public class UserService : IUserService
         _configuration = configuration;
     }
 
-   public async Task<User> RegisterAsync(User user, string password)
+   public async Task<string> RegisterAsync(User user, string password)
     {
-        // Add user registration logic here, e.g., hashing the password
-        // and storing the user in the database.
-        // For simplicity, assuming password is stored as plain text.
-        user.Password = password;
+        var hashedPassword  = CalculateMD5Hash(password);
+
+        user.Password = hashedPassword;
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-        return user;
+        return CreateJwtToken(user);
     }
 
     public async Task<string> AuthenticateAsync(string username, string password)
     {
-        // Add user authentication logic here.
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username && u.Password == password);
+        var hashedPassword  = CalculateMD5Hash(password);
+
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username && u.Password == hashedPassword);
         if (user == null) return null;
 
+        return CreateJwtToken(user);
+    }
+
+    public string CreateJwtToken(User user)
+    {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
         var tokenDescriptor = new SecurityTokenDescriptor
@@ -55,5 +63,18 @@ public class UserService : IUserService
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    public string CalculateMD5Hash(string input)
+    {
+        MD5 md5 = MD5.Create();
+        byte[] inputBytes = Encoding.ASCII.GetBytes(input);
+        byte[] hash = md5.ComputeHash(inputBytes);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < hash.Length; i++)
+        {
+            sb.Append(hash[i].ToString("X2"));
+        }
+        return sb.ToString();
     }
 }

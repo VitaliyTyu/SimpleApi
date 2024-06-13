@@ -23,8 +23,8 @@ public class AccountController : ControllerBase
             UserName = registrationDto.UserName,
             // Assign other properties as needed
         };
-        await _userService.RegisterAsync(user, registrationDto.Password);
-        return Ok();
+        var token = await _userService.RegisterAsync(user, registrationDto.Password);
+        return Ok(token);
     }
 
     /// <summary>

@@ -37,7 +37,7 @@ public class Product
     /// Gets or sets the collection of product categories associated with this product.
     /// </summary>
     public ICollection<Product> Products { get; set; }
-
+            
     /// <summary>
     /// Gets or sets the collection of order items for this product.
     /// </summary>
